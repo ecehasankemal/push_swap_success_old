@@ -12,20 +12,6 @@
 
 #include "push_swap.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t size)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < size && (s1[i] != '\0' || s2[i] != '\0'))
-	{
-		if (s1[i] != s2[i])
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-		i++;
-	}
-	return (0);
-}
-
 size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 {
 	size_t	index;
@@ -45,6 +31,26 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t size)
 		index++;
 	}
 	return (index);
+}
+
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*result;
+	size_t	length;
+
+	if (s == NULL)
+		return (NULL);
+	length = ft_strlen((char *)s);
+	if (start > length)
+		return (ft_strdup(""));
+	if (length - start >= len)
+		result = (char *)malloc((len + 1) * sizeof(char));
+	else
+		result = (char *)malloc((length - start + 1) * sizeof(char));
+	if (result == NULL)
+		return (NULL);
+	ft_strlcpy(result, (char *)&s[start], (len + 1));
+	return (result);
 }
 
 size_t	count_words(const char *s, char c)
