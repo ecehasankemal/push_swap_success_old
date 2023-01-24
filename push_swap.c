@@ -6,7 +6,7 @@
 /*   By: hece <hece@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/21 20:01:01 by hece              #+#    #+#             */
-/*   Updated: 2023/01/21 20:01:35 by hece             ###   ########.tr       */
+/*   Updated: 2023/01/24 16:14:22 by hece             ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	push_swap(t_stack **stack_a, t_stack **stack_b, int stack_size)
 static t_stack	*parse_fill_a(int ac, char *av[])
 {
 	t_stack	*stack_a;
-	char	*nums;
+	char	**nums;
 
 	if (ac == 2)
 	{
