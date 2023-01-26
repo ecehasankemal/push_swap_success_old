@@ -6,13 +6,13 @@
 /*   By: hece <hece@student.42kocaeli.com.tr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/21 10:22:27 by hece              #+#    #+#             */
-/*   Updated: 2023/01/21 10:22:28 by hece             ###   ########.tr       */
+/*   Updated: 2023/01/26 16:04:22 by hece             ###   ########.tr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-static int	ft_gnl_strchr(char *str)
+static int	ft_strchr(char *str)
 {
 	int	index;
 
@@ -28,7 +28,8 @@ static int	ft_gnl_strchr(char *str)
 	return (0);
 }
 
-static inline char	*ft_gnl_strjoin(char *s1, char *s2, int i, int j)
+static inline char
+	*ft_strjoin(char *s1, char *s2, int i, int j)
 {
 	char	*str;
 
@@ -55,34 +56,43 @@ static inline char	*ft_gnl_strjoin(char *s1, char *s2, int i, int j)
 	return (str);
 }
 
-static inline char	*ft_new_create_buffer(char *buffer, int i, int j, int len)
+static inline char
+	*ft_new_create_buffer(char *buffer, int index, int jndex)
 {
 	char	*res;
+	int		len;
 
+	len = 0;
 	while (buffer[len])
 		len++;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	if (!buffer[i])
+	while (buffer[index] && buffer[index] != '\n')
+		index++;
+	if (!buffer[index])
 	{
 		free(buffer);
 		return (NULL);
 	}
-	res = (char *)malloc(sizeof(char) * (len + 1 - i++));
+	res = (char *)malloc(sizeof(char) * (len - index + 1));
 	if (!res)
 		return (NULL);
-	while (buffer[i])
-		res[j++] = buffer[i++];
-	res[j] = '\0';
+	index++;
+	while (buffer[index])
+		res[jndex++] = buffer[index++];
+	res[jndex] = '\0';
 	free(buffer);
 	return (res);
 }
 
-static inline char	*ft_cb(char *buffer, int buff_size, int fd, char *temp)
+static inline char
+	*ft_create_buffer(char *buffer, int buff_size, int fd, int *index)
 {
+	char	*temp;
+
+	*index = 0;
+	temp = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!temp)
 		return (NULL);
-	while ((buff_size != 0 && !ft_gnl_strchr(buffer)))
+	while ((buff_size != 0 && !ft_strchr(buffer)))
 	{
 		buff_size = read(fd, temp, BUFFER_SIZE);
 		if (buff_size == -1)
@@ -91,7 +101,7 @@ static inline char	*ft_cb(char *buffer, int buff_size, int fd, char *temp)
 			return (NULL);
 		}
 		temp[buff_size] = '\0';
-		buffer = ft_gnl_strjoin(buffer, temp, 0, 0);
+		buffer = ft_strjoin(buffer, temp, 0, 0);
 	}
 	free(temp);
 	if (buffer[0] == 0)
@@ -104,27 +114,29 @@ static inline char	*ft_cb(char *buffer, int buff_size, int fd, char *temp)
 
 char	*get_next_line(int fd)
 {
-	int			index;
-	static char	*buf;
+	static char	*buffer;
 	char		*line;
+	int			index;
 
-	index = 0;
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	buf = ft_cb(buf, 1, fd, (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1)));
-	if (!buf)
+	buffer = ft_create_buffer(buffer, 1, fd, &index);
+	if (!buffer)
 		return (NULL);
-	while (buf[index] && buf[index] != '\n')
+	while (buffer[index] && buffer[index] != '\n')
 		index++;
 	line = (char *)malloc(sizeof(char) * (index + 2));
 	if (!line)
 		return (NULL);
 	index = -1;
-	while (buf[++index] && buf[index] != '\n')
-		line[index] = buf[index];
-	if (buf[++index - 1] == '\n')
-		line[index - 1] = buf[index - 1];
+	while (buffer[++index] && buffer[index] != '\n')
+		line[index] = buffer[index];
+	if (buffer[index] == '\n')
+	{
+		line[index] = buffer[index];
+		index++;
+	}
 	line[index] = '\0';
-	buf = ft_new_create_buffer(buf, 0, 0, 0);
+	buffer = ft_new_create_buffer(buffer, 0, 0);
 	return (line);
 }
